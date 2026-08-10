@@ -40,3 +40,15 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+    
+class Contact(TimeStampModel):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    subject = models.CharField(max_length=100)
+    messages = models.TextField()
+
+
+    def __str__(self):
+        return self.name
+    
