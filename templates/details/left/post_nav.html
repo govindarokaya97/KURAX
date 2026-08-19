@@ -1,0 +1,82 @@
+<div class="navigation-top">
+    <!-- Top Action Bar (Likes, Comments, Social Shares) -->
+    <div class="d-sm-flex justify-content-between align-items-center text-center">
+        <p class="like-info mb-0">
+            <span class="align-middle"><i class="fa fa-heart text-danger"></i></span>
+            Lily and 4 people like this
+        </p>
+
+        <div class="col-sm-4 text-center my-2 my-sm-0">
+            <p class="comment-count mb-0">
+                <span class="align-middle"><i class="fa fa-comment"></i></span>
+                {{ post.comment_set.count }} Comments{{ post.comments.count|pluralize }}
+            </p>
+        </div>
+
+        <ul class="social-icons list-inline mb-0">
+            <li class="list-inline-item"><a href="#" aria-label="Share on Facebook"><i
+                        class="fab fa-facebook-f"></i></a></li>
+            <li class="list-inline-item"><a href="#" aria-label="Share on Twitter"><i class="fab fa-twitter"></i></a>
+            </li>
+            <li class="list-inline-item"><a href="#" aria-label="Share on Dribbble"><i class="fab fa-dribbble"></i></a>
+            </li>
+            <li class="list-inline-item"><a href="#" aria-label="Share on Behance"><i class="fab fa-behance"></i></a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Navigation Area (Prev / Next Post) -->
+    <div class="navigation-area mt-4">
+        <div class="row">
+
+            <!-- Previous Post -->
+            <div class="col-lg-6 col-md-6 col-12 nav-left d-flex justify-content-start align-items-center mb-3 mb-md-0">
+                {% if pre_post %}
+                {% if pre_post.image %}
+                <div class="thumb mr-3">
+                    <a href="{% url 'detail' pre_post.id %}">
+                        <img class="img-fluid nav-thumb" src="{{ pre_post.image.url }}" alt="{{ pre_post.title }}">
+                    </a>
+                </div>
+                {% endif %}
+                <div class="arrow mr-2">
+                    <a href="{% url 'detail' pre_post.id %}" aria-label="Previous post">
+                        <span class="lnr text-white ti-arrow-left"></span>
+                    </a>
+                </div>
+                <div class="details">
+                    <p class="mb-1">Prev Post</p>
+                    <a href="{% url 'detail' pre_post.id %}">
+                        <h4 class="mb-0">{{ pre_post.title }}</h4>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Next Post -->
+            <div class="col-lg-6 col-md-6 col-12 nav-right d-flex justify-content-end align-items-center text-right">
+                {% if next_post %}
+                <div class="details">
+                    <p class="mb-1">Next Post</p>
+                    <a href="{% url 'detail' next_post.id %}">
+                        <h4 class="mb-0">{{ next_post.title }}</h4>
+                    </a>
+                </div>
+                <div class="arrow ml-2">
+                    <a href="{% url 'detail' next_post.id %}" aria-label="Next post">
+                        <span class="lnr text-white ti-arrow-right"></span>
+                    </a>
+                </div>
+                {% if next_post.image %}
+                <div class="thumb ml-3">
+                    <a href="{% url 'detail' next_post.id %}">
+                        <img class="img-fluid nav-thumb" src="{{ next_post.image.url }}" alt="{{ next_post.title }}">
+                    </a>
+                </div>
+                {% endif %}
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+{% extends 'kurax/base.html' %}
+{% load static %}
+{% block content %}
+
+<!--================Blog Area =================-->
+<section class="blog_area section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mb-5 mb-lg-0">
+                <div class="blog_left_sidebar">
+                    {% include 'lists/left/post_list.html' %}
+                    {% include 'lists/left/pagination.html' %}
+
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="blog_right_sidebar">
+                    {% include 'lists/right/search_form.html' %}
+                    {% include 'lists/right/category.html' %}
+                    {% include 'lists/right/popular_post.html' %}
+                    {% include 'lists/right/tags.html' %}
+                    {% include 'lists/right/instagram_image.html' %}
+                    {% include 'lists/right/newsletter.html' %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================Blog Area =================-->
+
+
+{% endblock %}

@@ -1,0 +1,14 @@
+<aside class="single_sidebar_widget tag_cloud_widget">
+    <h4 class="widget_title">Tag Clouds</h4>
+    <ul class="flex flex-wrap gap-2">
+        {% for tag in popular_tags %}
+        <li>
+            <a href="{% url 'post_by_tag' tag.id %}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">
+                {{ tag.name }} ({{ tag.post_count }})
+            </a>
+        </li>
+        {% empty %}
+        <li>No tags available.</li>
+        {% endfor %}
+    </ul>
+</aside>
