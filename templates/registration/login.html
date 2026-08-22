@@ -1,0 +1,114 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}
+Login | MyBlog
+{% endblock %}
+
+{% block content %}
+
+<div class="flex items-center justify-center min-h-[80vh]">
+
+    <div class="w-full max-w-md">
+
+        <div class="bg-white rounded-3xl shadow-2xl p-10 border">
+
+            <div class="text-center mb-8">
+
+                <div class="mx-auto w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center mb-5">
+
+                    <i class="fa-solid fa-user text-3xl text-blue-600"></i>
+
+                </div>
+
+                <h2 class="text-3xl font-bold text-gray-800">
+
+                    Welcome Back
+
+                </h2>
+
+                <p class="text-gray-500 mt-2">
+
+                    Sign in to continue to MyBlog
+
+                </p>
+
+            </div>
+
+            <form method="post" action="{% url 'news-admin:login' %}" class="space-y-6">
+
+                {% csrf_token %}
+
+                {% if form.errors %}
+
+                <div class="bg-red-50 border border-red-300 text-red-700 rounded-xl p-4">
+
+                    Invalid username or password.
+
+                </div>
+
+                {% endif %}
+
+                <div>
+
+                    <label class="block mb-2 font-medium">
+
+                        Username
+
+                    </label>
+
+                    <input type="text" name="username" id="username" autofocus required
+                        class="w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+
+                </div>
+
+                <div>
+
+                    <label class="block mb-2 font-medium">
+
+                        Password
+
+                    </label>
+
+                    <input type="password" name="password" id="password" required
+                        class="w-full px-4 py-3 rounded-xl border focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+
+                </div>
+
+                {% if next %}
+                <input type="hidden" name="next" value="{{ next }}">
+                {% endif %}
+
+                <button type="submit"
+                    class="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold hover:opacity-90 transition">
+
+                    <i class="fa-solid fa-right-to-bracket mr-2"></i>
+
+                    Login
+
+                </button>
+
+            </form>
+
+            <div class="text-center mt-8">
+
+                <p class="text-gray-500">
+
+                    Don't have an account?
+
+                    <a href="{% url 'news-admin:register' %}" class="text-blue-600 hover:underline font-semibold">
+
+                        Register Here
+
+                    </a>
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

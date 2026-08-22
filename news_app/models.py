@@ -30,13 +30,27 @@ class Post(models.Model):
 
     title = models.CharField(max_length=200)
     content = models.TextField()
-    image = models.ImageField(upload_to='post_images/%Y/%m/%d/',blank=False)
+    image = models.ImageField(
+        upload_to='post_images/%Y/%m/%d/',
+        blank=True,
+        null=True
+    )
     author = models.ForeignKey("auth.User", on_delete=models.CASCADE)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="active")
     view_count = models.PositiveIntegerField(default=0)
     published_at = models.DateTimeField(null=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="posts")
-    tags = models.ManyToManyField(Tag, related_name="posts")
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="posts"
+    )
+    tags = models.ManyToManyField(
+        Tag,
+        related_name="posts",
+        blank=True
+    )
 
     def __str__(self):
         return self.title

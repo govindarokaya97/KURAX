@@ -16,11 +16,19 @@
                                         2019</li>
                                 </ul>
                             </div>
+
                             <div class="header-info-right">
+
                                 <ul class="header-social">
                                     <li><a href="#"><i class="fab fa-twitter"></i></a></li>
                                     <li><a href="#"><i class="fab fa-instagram"></i></a></li>
                                     <li> <a href="#"><i class="fab fa-pinterest-p"></i></a></li>
+                                    {% if user.is_authenticated and user.is_staff %}
+                                    <a href="{% url 'news-admin:post_list' %}"
+                                        class="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">
+                                        Admin
+                                    </a>
+                                    {% endif %}
                                 </ul>
                             </div>
                         </div>
@@ -33,11 +41,11 @@
                         <!-- Logo -->
                         <div class="col-xl-3 col-lg-3 col-md-3">
                             <div class="logo">
-                                <a href="index.html"><img src="{% static 'kurax/assets/img/logo/logo.png' %}"
-                                        alt=""></a>
+                                <a href="{% url 'home' %}"><img src="{% static 'kurax/assets/img/logo/logo1.png' %}"
+                                        alt="" width="235" height="79"></a>
                             </div>
                         </div>
-                        <div class="col-xl-9 col-lg-9 col-md-9">
+                        <div class=" col-xl-9 col-lg-9 col-md-9">
                             <div class="header-banner f-right ">
                                 <img src="{% static 'kurax/assets/img/hero/header_card.jpg' %}" alt="">
                             </div>
@@ -51,8 +59,8 @@
                         <div class="col-xl-10 col-lg-10 col-md-12 header-flex">
                             <!-- sticky -->
                             <div class="sticky-logo">
-                                <a href="index.html"><img src="{% static 'kurax/assets/img/logo/logo.png' %}"
-                                        alt=""></a>
+                                <a href="{% url 'home' %}"><img src="{% static 'kurax/assets/img/logo/logo1.png' %}"
+                                        alt="" width="235" height="79"></a>
                             </div>
                             <!-- Main-menu -->
                             <div class="main-menu d-none d-md-block">
@@ -71,7 +79,8 @@
                                         <li><a href="#">Tags</a>
                                             <ul class="submenu">
                                                 {% for tag in tags %}
-                                                <li><a href="{% url 'post_by_tag' tag.id %}l">{{ tag.name }}</a></li>
+                                                <li><a href="{% url 'post_by_tag' tag.id %}">{{ tag.name }}</a>
+                                                </li>
                                                 {% endfor %}
                                             </ul>
                                         </li>

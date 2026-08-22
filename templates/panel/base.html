@@ -1,0 +1,318 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+        }
+
+        /* Smooth navigation underline */
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 4px;
+            width: 0;
+            height: 2px;
+            border-radius: 999px;
+            background: currentColor;
+            transform: translateX(-50%);
+            transition: width 0.2s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 55%;
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="bg-gray-50 flex flex-col min-h-screen">
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="min-h-[76px] flex items-center justify-between gap-6">
+
+                <!-- ================= BRAND ================= -->
+
+                <a href="{% url 'news-admin:post_list' %}" class="flex items-center gap-3 shrink-0 group">
+
+                    <!-- Logo -->
+                    <div class="flex items-center justify-center
+                                rounded-xl bg-gray-50 border border-gray-100
+                                px-2 py-1.5
+                                group-hover:border-blue-200
+                                group-hover:bg-blue-50
+                                transition duration-200">
+
+                        <img src="{% static 'kurax/assets/img/logo/logo1.png' %}" alt="Kurax"
+                            class="w-[92px] h-auto object-contain">
+                    </div>
+
+                    <!-- Brand Text -->
+                    <div class="hidden sm:block border-l border-gray-200 pl-3">
+
+                        <h1 class="text-base font-bold text-gray-900 leading-tight">
+                            Admin Panel
+                        </h1>
+
+                        <p class="text-[11px] text-gray-400 font-medium mt-0.5">
+                            News Management
+                        </p>
+
+                    </div>
+
+                </a>
+
+
+                <!-- ================= NAVIGATION ================= -->
+
+                {% if request.resolver_match.url_name not in "login register" %}
+
+                <nav class="hidden lg:flex items-center
+                            bg-gray-50 border border-gray-200
+                            rounded-xl p-1">
+
+                    <!-- Home -->
+                    <a href="{% url 'home' %}" class="nav-link flex items-center gap-2
+                               px-4 py-2.5
+                               rounded-lg
+                               text-sm font-medium text-gray-600
+                               hover:text-blue-600
+                               hover:bg-white
+                               transition duration-200">
+
+                        <i class="fa-solid fa-house text-xs"></i>
+                        <span>Home</span>
+                    </a>
+
+
+                    <!-- Posts -->
+                    <a href="{% url 'news-admin:post_list' %}" class="nav-link flex items-center gap-2
+                               px-4 py-2.5
+                               rounded-lg
+                               text-sm font-medium text-gray-600
+                               hover:text-blue-600
+                               hover:bg-white
+                               transition duration-200">
+
+                        <i class="fa-solid fa-newspaper text-xs"></i>
+                        <span>Posts</span>
+                    </a>
+
+
+                    {% if user.is_authenticated %}
+
+                    <!-- Drafts -->
+                    <a href="{% url 'news-admin:draft_list' %}" class="nav-link flex items-center gap-2
+                               px-4 py-2.5
+                               rounded-lg
+                               text-sm font-medium text-gray-600
+                               hover:text-amber-600
+                               hover:bg-white
+                               transition duration-200">
+
+                        <i class="fa-solid fa-pen-to-square text-xs"></i>
+                        <span>Drafts</span>
+                    </a>
+
+                    {% endif %}
+
+                </nav>
+
+                {% endif %}
+
+
+                <!-- ================= RIGHT SIDE ================= -->
+
+                <div class="flex items-center gap-3 ml-auto">
+
+
+                    <!-- ================= DATE & TIME ================= -->
+
+                    <div class="hidden md:flex items-center gap-3
+                                px-3.5 py-2
+                                rounded-xl
+                                bg-gray-50
+                                border border-gray-200">
+
+                        <!-- Clock Icon -->
+                        <div class="w-9 h-9 rounded-lg
+                                    bg-blue-50
+                                    text-blue-600
+                                    flex items-center justify-center">
+
+                            <i class="fa-regular fa-clock text-sm"></i>
+
+                        </div>
+
+                        <!-- Date -->
+                        <div class="leading-tight">
+
+                            <p class="text-[10px]
+                                      font-semibold
+                                      uppercase
+                                      tracking-wider
+                                      text-gray-400">
+
+                                Today
+
+                            </p>
+
+                            <p class="text-xs
+                                      font-semibold
+                                      text-gray-800
+                                      whitespace-nowrap">
+
+                                {% now "l, d M Y" %}
+
+                            </p>
+
+                            <p class="text-[11px]
+                                      text-blue-600
+                                      font-semibold
+                                      mt-0.5">
+
+                                {% now "h:i A" %}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ================= DIVIDER ================= -->
+
+                    {% if user.is_authenticated %}
+                    <div class="hidden md:block h-9 w-px bg-gray-200"></div>
+                    {% endif %}
+
+
+                    <!-- ================= USER / LOGOUT ================= -->
+
+                    {% if user.is_authenticated %}
+
+                    <div class="flex items-center gap-3">
+
+                        <!-- User Avatar -->
+                        <div class="hidden sm:flex
+                                    w-9 h-9
+                                    rounded-full
+                                    bg-gradient-to-br from-blue-600 to-indigo-600
+                                    text-white
+                                    items-center justify-center
+                                    shadow-sm">
+
+                            <i class="fa-solid fa-user text-sm"></i>
+
+                        </div>
+
+                        <!-- Logout -->
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+
+                            <button type="submit" class="flex items-center gap-2
+                                       px-4 py-2.5
+                                       rounded-xl
+                                       bg-red-50
+                                       text-red-600
+                                       border border-red-100
+                                       hover:bg-red-500
+                                       hover:text-white
+                                       hover:border-red-500
+                                       transition duration-200">
+
+                                <i class="fa-solid fa-right-from-bracket text-sm"></i>
+
+                                <span class="hidden sm:inline text-sm font-semibold">
+                                    Logout
+                                </span>
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+                    {% elif request.resolver_match.url_name not in "login register" %}
+
+                    <!-- Login -->
+                    <a href="{% url 'login' %}" class="flex items-center gap-2
+                               px-5 py-2.5
+                               rounded-xl
+                               bg-blue-600
+                               text-white
+                               shadow-sm
+                               shadow-blue-200
+                               hover:bg-blue-700
+                               hover:shadow-md
+                               transition duration-200">
+
+                        <i class="fa-solid fa-right-to-bracket text-sm"></i>
+
+                        <span class="text-sm font-semibold">
+                            Login
+                        </span>
+
+                    </a>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="flex-1">
+
+        {% block page_header %}
+        {% endblock %}
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+            {% block content %}
+            {% endblock %}
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>

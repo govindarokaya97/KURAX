@@ -2,7 +2,7 @@ from news_app.models import Post, Category, Tag
 from django.db.models import Sum, Count
 
 def navigation(request):
-    categories = Category.objects.all()[:5]
+    categories = Category.objects.all()[:4]
     tags = Tag.objects.all()[:10]
 
     trending_posts = Post.objects.filter(
@@ -20,7 +20,7 @@ def navigation(request):
 
     random_posts = Post.objects.filter(
         published_at__isnull=False, status="active"
-    ).order_by("?")[:5]
+    ).order_by("?")[:6]
 
     return {
         "categories": categories,

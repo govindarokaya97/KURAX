@@ -1,14 +1,17 @@
 {% load static %}
 <div class="col-lg-8">
+
     <!-- Trending Top -->
     <div class="trending-top mb-30">
+        {% for top in trending_top %}
         <div class="trend-top-img">
-            <img src="{{ trending_top.image.url }}" alt="" />
+            <img src="{{ top.image.url }}" alt="" />
             <div class="trend-top-cap">
-                <span>{{ trending_top.category }}</span>
-                <h2><a href="{% url 'detail' trending_top.id %}">{{ trending_top.title|truncatechars:50 }}</a></h2>
+                <span>{{ top.category }}</span>
+                <h2><a href="{% url 'detail' top.id %}">{{ top.title|truncatechars:50 }}</a></h2>
             </div>
         </div>
+        {% endfor %}
     </div>
     <!-- Trending Bottom -->
     <div class="trending-bottom">

@@ -1,23 +1,112 @@
-<!--Start pagination -->
-<div class="pagination-area pb-45 text-center">
-    <div class="container">
-        <div class="row">
-            <div class="col-xl-12">
-                <div class="single-wrap d-flex justify-content-center">
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination justify-content-start">
-                            <li class="page-item"><a class="page-link" href="#"><span
-                                        class="flaticon-arrow roted"></span></a></li>
-                            <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                            <li class="page-item"><a class="page-link" href="#">02</a></li>
-                            <li class="page-item"><a class="page-link" href="#">03</a></li>
-                            <li class="page-item"><a class="page-link" href="#"><span
-                                        class="flaticon-arrow right-arrow"></span></a></li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-        </div>
+<!-- Start Pagination -->
+{% if page_obj.has_other_pages %}
+
+<div class="w-full mt-14 pb-8">
+
+    <div class="flex justify-center">
+
+        <nav aria-label="Page navigation">
+
+            <ul class="flex items-center justify-center gap-2">
+
+                <!-- Previous -->
+                {% if page_obj.has_previous %}
+
+                <li>
+                    <a href="?page={{ page_obj.previous_page_number }}" aria-label="Previous" class="w-11 h-11 flex items-center justify-center
+                               rounded-lg
+                               border border-gray-200
+                               bg-white
+                               text-gray-500
+                               hover:bg-blue-600
+                               hover:text-white
+                               hover:border-blue-600
+                               transition-all duration-200">
+
+                        <i class="fa-solid fa-arrow-left text-xs"></i>
+
+                    </a>
+                </li>
+
+                {% endif %}
+
+
+                <!-- Page Numbers -->
+                {% for i in page_obj.paginator.page_range %}
+
+                {% if i >= page_obj.number|add:'-1' and i <= page_obj.number|add:'1' %} <li>
+
+                    {% if page_obj.number == i %}
+
+                    <!-- Active -->
+                    <span class="w-11 h-11 flex items-center justify-center
+                                   rounded-lg
+                                   bg-blue-600
+                                   text-white
+                                   font-semibold
+                                   text-sm
+                                   shadow-md">
+
+                        {{ i|stringformat:"02d" }}
+
+                    </span>
+
+                    {% else %}
+
+                    <!-- Normal -->
+                    <a href="?page={{ i }}" class="w-11 h-11 flex items-center justify-center
+                                   rounded-lg
+                                   bg-white
+                                   border border-gray-200
+                                   text-gray-600
+                                   font-medium
+                                   text-sm
+                                   hover:bg-blue-50
+                                   hover:text-blue-600
+                                   hover:border-blue-200
+                                   transition-all duration-200">
+
+                        {{ i|stringformat:"02d" }}
+
+                    </a>
+
+                    {% endif %}
+
+                    </li>
+
+                    {% endif %}
+
+                    {% endfor %}
+
+
+                    <!-- Next -->
+                    {% if page_obj.has_next %}
+
+                    <li>
+                        <a href="?page={{ page_obj.next_page_number }}" aria-label="Next" class="w-11 h-11 flex items-center justify-center
+                               rounded-lg
+                               border border-gray-200
+                               bg-white
+                               text-gray-500
+                               hover:bg-blue-600
+                               hover:text-white
+                               hover:border-blue-600
+                               transition-all duration-200">
+
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+
+                        </a>
+                    </li>
+
+                    {% endif %}
+
+            </ul>
+
+        </nav>
+
     </div>
+
 </div>
-<!-- End pagination  -->
+
+{% endif %}
+<!-- End Pagination -->

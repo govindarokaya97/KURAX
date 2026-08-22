@@ -23,7 +23,9 @@ class HomeView(ListView):
         context = super().get_context_data(**kwargs)
         posts = self.get_queryset()
 
-        context["trending_top"] = posts.order_by("-view_count").first()
+        context["categories"] = Category.objects.order_by()[:4]
+        context["whatnews_top_6"] = posts.order_by("-published_at")[:6]
+        context["trending_top"] = posts.order_by("-view_count")[:1]
         context["trending_bottom"] = posts.order_by("-view_count")[1:4]
         context["recent_posts"] = posts.order_by("-published_at")[:3]
 

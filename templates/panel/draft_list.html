@@ -1,0 +1,142 @@
+{% extends 'panel/base.html' %}
+
+{% block title %}
+Draft Posts
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-10">
+
+        <div>
+            <h1 class="text-4xl font-bold text-gray-900">
+                📝 Draft Posts
+            </h1>
+
+            <p class="mt-2 text-gray-500">
+                Continue writing and manage your unpublished articles.
+            </p>
+        </div>
+
+        {% if user.is_authenticated %}
+        <a href="{% url 'news-admin:post_create' %}"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg transition">
+            ➕ Create New Draft
+        </a>
+        {% endif %}
+
+    </div>
+
+    <!-- Draft Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+
+        {% for post in posts %}
+
+        <div
+            class="bg-white rounded-2xl border border-gray-200 shadow-lg hover:shadow-2xl transition duration-300 overflow-hidden flex flex-col group">
+
+            <!-- Image -->
+            {% if post.image %}
+            <div class="relative h-56 overflow-hidden">
+
+                <img src="{{ post.image.url }}" alt="{{ post.title }}"
+                    class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+
+                <!-- Draft Badge -->
+                <div class="absolute top-4 left-4">
+                    <span class="px-3 py-1 bg-yellow-500 text-white rounded-full text-xs font-semibold shadow">
+                        Draft
+                    </span>
+                </div>
+
+            </div>
+            {% endif %}
+
+            <!-- Body -->
+            <div class="p-6 flex flex-col flex-grow">
+
+                <a href="{% url 'news-admin:draft_detail' post.id %}"><button
+                        class="text-2xl font-bold text-gray-900 hover:text-blue-600 transition mb-3 line-clamp-2">
+                        {{ post.title }}
+                    </button></a>
+
+                <p class="text-gray-600 leading-7 line-clamp-4 flex-grow">
+                    {{ post.content|truncatechars:180 }}
+                </p>
+
+                <!-- Metadata -->
+                <div class="mt-6 space-y-2 text-sm text-gray-500">
+
+                    <div class="flex items-center gap-2">
+                        👤
+                        <span class="font-medium text-gray-700">
+                            {{ post.author.username }}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="bg-gray-50 border-t p-4 flex items-center justify-between">
+                <a href="{% url 'news-admin:draft_detail' post.id %}"
+                    class="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition" title="Preview">
+                    👁
+                </a>
+
+
+                <div class="flex gap-2">
+
+
+
+                    <a href="{% url 'news-admin:post_delete' post.id %}"
+                        class="px-3 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition" title="Delete">
+                        🗑
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <!-- Empty State -->
+        <div class="col-span-full">
+
+            <div class="bg-white rounded-2xl shadow-lg border border-dashed border-gray-300 p-16 text-center">
+
+                <div class="text-7xl mb-6">
+                    📄
+                </div>
+
+                <h2 class="text-3xl font-bold text-gray-800 mb-3">
+                    No Drafts Available
+                </h2>
+
+                <p class="text-gray-500 max-w-xl mx-auto">
+                    You don't have any draft posts yet. Start writing your next amazing article.
+                </p>
+
+                {% if user.is_authenticated %}
+                <a href="{% url 'news-admin:post_create' %}"
+                    class="inline-flex items-center gap-2 mt-8 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg transition">
+                    ➕ Create Draft
+                </a>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+{% endblock %}

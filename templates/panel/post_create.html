@@ -1,0 +1,346 @@
+{% extends 'panel/base.html' %}
+
+{% block title %}
+Create New Post
+{% endblock %}
+
+{% block content %}
+
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <!-- Header -->
+    <div class="mb-10">
+        <h1 class="text-4xl font-bold text-gray-900">
+            {% if form.instance.id %}
+            Update Post
+            {% endif %}
+        </h1>
+
+        <p class="mt-3 text-gray-500 text-lg">
+            Share your ideas with the community by creating a beautiful article.
+        </p>
+
+        <!-- Required fields notice -->
+        <p class="mt-2 text-sm text-gray-500">
+            <span class="text-red-500 font-bold">*</span>
+            Required fields
+        </p>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+
+        <form method="POST" enctype="multipart/form-data" id="postForm" novalidate>
+
+            {% csrf_token %}
+
+            <div class="grid lg:grid-cols-3 gap-8 p-8">
+
+                <!-- Main Form -->
+                <div class="lg:col-span-2 space-y-7">
+
+                    <!-- Title -->
+                    <div>
+                        <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">
+
+                            📝 Title
+                            <span class="text-red-500" aria-hidden="true">*</span>
+
+                        </label>
+
+                        <input type="text" name="title" value="{{ form.title.value|default_if_none:'' }}" id="title"
+                            required aria-required="true" minlength="3" placeholder="Enter your post title" class="w-full rounded-xl border border-gray-300 px-4 py-3
+                                   focus:ring-2 focus:ring-blue-500
+                                   focus:border-blue-500
+                                   outline-none transition">
+
+                        {% if form.title.errors %}
+                        <div class="mt-1 text-red-500 text-sm">
+                            {% for error in form.title.errors %}
+                            <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Content -->
+                    <div>
+
+                        <label for="content" class="block text-sm font-semibold text-gray-700 mb-2">
+
+                            📖 Content
+                            <span class="text-red-500" aria-hidden="true">*</span>
+
+                        </label>
+
+                        <textarea name="content" id="content" rows="12" required aria-required="true" minlength="10"
+                            placeholder="Write your story here..." class="w-full rounded-xl border border-gray-300 px-4 py-3
+                                   focus:ring-2 focus:ring-blue-500
+                                   focus:border-blue-500
+                                   outline-none transition">{{ form.content.value|default_if_none:'' }}</textarea>
+
+                        {% if form.content.errors %}
+                        <div class="mt-1 text-red-500 text-sm">
+                            {% for error in form.content.errors %}
+                            <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- Sidebar -->
+                <div class="space-y-6">
+
+                    <!-- Author -->
+                    <div class="rounded-xl border border-gray-200 bg-gray-50 p-5
+                                hover:shadow-md transition">
+
+                        <h3 class="font-semibold text-gray-900 mb-4">
+                            👤 Author
+                        </h3>
+
+                        <div class="flex items-center gap-4">
+
+                            <div class="w-12 h-12 rounded-full bg-blue-600 text-white
+                                        flex items-center justify-center font-bold text-lg">
+
+                                {{ user.username|first|upper }}
+
+                            </div>
+
+                            <div>
+
+                                <p class="font-semibold">
+
+                                    {% if user.first_name %}
+                                    {{ user.first_name }}
+                                    {% else %}
+                                    {{ user.username }}
+                                    {% endif %}
+
+                                </p>
+
+                                <p class="text-sm text-gray-500">
+                                    Content Creator
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Image Upload -->
+                    <div class="rounded-xl border border-gray-200 bg-gray-50 p-5
+                                hover:shadow-md transition">
+
+                        <h3 class="font-semibold text-gray-900 mb-4">
+                            🖼 Featured Image
+                        </h3>
+
+                        <input type="file" name="image" id="image" accept="image/jpeg,image/png,image/webp" class="block w-full text-sm
+                                   file:mr-4
+                                   file:px-4
+                                   file:py-2
+                                   file:rounded-lg
+                                   file:border-0
+                                   file:bg-blue-600
+                                   file:text-white
+                                   hover:file:bg-blue-700" onchange="previewImage()">
+
+                        <img id="preview" src="{% if form.instance.image %}{{ form.instance.image.url }}{% endif %}"
+                            alt="Image Preview" class="mt-4 w-full h-64 object-cover rounded-lg
+                                   border border-gray-300
+                                   {% if not form.instance.image %}hidden{% endif %}">
+
+                        <p class="text-xs text-gray-500 mt-3">
+                            JPG, PNG or WEBP recommended.
+                        </p>
+
+                        {% if form.image.errors %}
+                        <div class="mt-1 text-red-500 text-sm">
+                            {% for error in form.image.errors %}
+                            <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Footer -->
+            <div class="bg-gray-50 border-t px-8 py-6
+                        flex flex-col sm:flex-row justify-between
+                        items-center gap-4">
+
+                <a href="{% url 'news-admin:post_list' %}" class="px-6 py-3 rounded-lg bg-gray-200
+                           hover:bg-gray-300 transition">
+                    ← Back to Posts
+                </a>
+
+
+                <div class="flex gap-3">
+
+                    <!-- Reset -->
+                    <button type="reset" id="resetButton" class="px-6 py-3 rounded-lg border border-gray-300
+                               hover:bg-gray-100 transition">
+                        Reset
+                    </button>
+
+
+                    <!-- Submit -->
+                    <button type="submit" class="px-8 py-3 rounded-lg bg-blue-600
+                               hover:bg-blue-700 text-white
+                               shadow-lg transition">
+                        Draft Post
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    // Image preview
+    function previewImage() {
+
+        const preview = document.getElementById('preview');
+        const fileInput = document.getElementById('image');
+
+        const file = fileInput.files[0];
+
+        if (file) {
+
+            // Validate image type
+            const allowedTypes = [
+                'image/jpeg',
+                'image/png',
+                'image/webp'
+            ];
+
+            if (!allowedTypes.includes(file.type)) {
+
+                alert('Please select a JPG, PNG, or WEBP image.');
+
+                fileInput.value = '';
+                preview.src = '';
+                preview.classList.add('hidden');
+
+                return;
+            }
+
+            preview.src = URL.createObjectURL(file);
+            preview.classList.remove('hidden');
+
+        } else {
+
+            preview.src = '';
+            preview.classList.add('hidden');
+
+        }
+    }
+
+
+    // Form validation
+    document.getElementById('postForm').addEventListener('submit', function (event) {
+
+        const title = document.getElementById('title');
+        const content = document.getElementById('content');
+
+        // Remove previous custom errors
+        title.classList.remove('border-red-500');
+        content.classList.remove('border-red-500');
+
+        let valid = true;
+
+        // Validate title
+        if (title.value.trim() === '') {
+
+            title.classList.add('border-red-500');
+            title.focus();
+
+            valid = false;
+
+            alert('Please enter a title.');
+
+            event.preventDefault();
+            return;
+        }
+
+        // Validate content
+        if (content.value.trim() === '') {
+
+            content.classList.add('border-red-500');
+            content.focus();
+
+            valid = false;
+
+            alert('Please enter the post content.');
+
+            event.preventDefault();
+            return;
+        }
+
+        // Minimum title length
+        if (title.value.trim().length < 3) {
+
+            title.classList.add('border-red-500');
+            title.focus();
+
+            alert('Title must contain at least 3 characters.');
+
+            event.preventDefault();
+            return;
+        }
+
+        // Minimum content length
+        if (content.value.trim().length < 10) {
+
+            content.classList.add('border-red-500');
+            content.focus();
+
+            alert('Content must contain at least 10 characters.');
+
+            event.preventDefault();
+            return;
+        }
+
+    });
+
+
+    // Reset form styling
+    document.getElementById('resetButton').addEventListener('click', function () {
+
+        const title = document.getElementById('title');
+        const content = document.getElementById('content');
+        const preview = document.getElementById('preview');
+
+        title.classList.remove('border-red-500');
+        content.classList.remove('border-red-500');
+
+        preview.src = '';
+        preview.classList.add('hidden');
+
+    });
+
+</script>
+
+{% endblock %}
