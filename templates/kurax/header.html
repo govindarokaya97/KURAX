@@ -1,40 +1,333 @@
 {% load static %}
+
+<style>
+    .topbar-wrapper {
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 30px;
+    }
+
+    /* LEFT */
+
+    .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+    }
+
+    .topbar-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .topbar-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        color: #ffffff;
+        font-size: 12px;
+    }
+
+    .topbar-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        line-height: 1.2;
+    }
+
+    .topbar-label {
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        color: rgba(255, 255, 255, 0.45);
+        margin-bottom: 2px;
+    }
+
+    .topbar-value {
+        font-size: 11px;
+        font-weight: 600;
+        color: #ffffff;
+        white-space: nowrap;
+    }
+
+    /* DIVIDER */
+
+    .topbar-divider {
+        display: block;
+        width: 1px;
+        height: 26px;
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    /* RIGHT */
+
+    .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    /* WEATHER */
+
+    .weather-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .weather-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        color: #ffffff;
+        font-size: 13px;
+    }
+
+    .weather-content {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+    }
+
+    .weather-value {
+        display: flex;
+        align-items: baseline;
+        gap: 7px;
+
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .weather-value small {
+        color: rgba(255, 255, 255, 0.45);
+        font-size: 9px;
+        font-weight: 500;
+    }
+
+    /* SOCIAL */
+
+    .social-links {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .social-links a {
+        width: 25px;
+        height: 25px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        color: rgba(255, 255, 255, 0.65);
+        font-size: 11px;
+
+        border-radius: 50%;
+
+        transition: all 0.2s ease;
+    }
+
+    .social-links a:hover {
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* ADMIN */
+
+    .admin-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        padding: 7px 12px;
+
+        background: #2563eb;
+        color: #ffffff;
+
+        border-radius: 4px;
+
+        font-size: 10px;
+        font-weight: 600;
+
+        transition: all 0.2s ease;
+    }
+
+    .admin-button:hover {
+        background: #1d4ed8;
+        color: #ffffff;
+    }
+
+    .admin-button i {
+        font-size: 10px;
+    }
+
+
+    @media (max-width: 991px) {
+
+        .topbar-left {
+            gap: 15px;
+        }
+
+        .topbar-right {
+            gap: 14px;
+        }
+
+        .topbar-wrapper {
+            gap: 15px;
+        }
+
+    }
+</style>
+
+<script>
+    function updateClock() {
+        const clock = document.getElementById("live-clock");
+
+        if (!clock) return;
+
+        const now = new Date();
+
+        let hours = now.getHours();
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        const seconds = String(now.getSeconds()).padStart(2, "0");
+
+        const period = hours >= 12 ? "PM" : "AM";
+
+        hours = hours % 12 || 12;
+
+        clock.textContent =
+            `${String(hours).padStart(2, "0")}:${minutes}:${seconds} ${period}`;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+</script>
+
+
 <header>
-    <!-- Header Start -->
+
     <div class="header-area">
         <div class="main-header ">
+
             <div class="header-top black-bg d-none d-md-block">
                 <div class="container">
-                    <div class="col-xl-12">
-                        <div class="row d-flex justify-content-between align-items-center">
-                            <div class="header-info-left">
-                                <ul>
-                                    <li><img src="{% static 'kurax/assets/img/icon/header_icon1.png' %}" alt="">34ºc,
-                                        Sunny </li>
-                                    <li><img src="{% static 'kurax/assets/img/icon/header_icon1.png' %}" alt="">Tuesday,
-                                        18th June,
-                                        2019</li>
-                                </ul>
+
+                    <div class="topbar-wrapper">
+
+                        <!-- LEFT SIDE -->
+                        <div class="topbar-left">
+
+                            <!-- Date -->
+                            <div class="topbar-item">
+                                <div class="topbar-icon">
+                                    <i class="far fa-calendar-alt"></i>
+                                </div>
+
+                                <div class="topbar-content">
+                                    <span class="topbar-label">TODAY</span>
+                                    <span class="topbar-value">
+                                        {% now "l, d M Y" %}
+                                    </span>
+                                </div>
                             </div>
 
-                            <div class="header-info-right">
+                            <!-- Divider -->
+                            <span class="topbar-divider"></span>
 
-                                <ul class="header-social">
-                                    <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                                    <li><a href="#"><i class="fab fa-instagram"></i></a></li>
-                                    <li> <a href="#"><i class="fab fa-pinterest-p"></i></a></li>
-                                    {% if user.is_authenticated and user.is_staff %}
-                                    <a href="{% url 'news-admin:post_list' %}"
-                                        class="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">
-                                        Admin
-                                    </a>
-                                    {% endif %}
-                                </ul>
+                            <!-- Time -->
+                            <div class="topbar-item">
+                                <div class="topbar-icon">
+                                    <i class="far fa-clock"></i>
+                                </div>
+
+                                <div class="topbar-content">
+                                    <span class="topbar-label">LOCAL TIME</span>
+                                    <span id="live-clock" class="topbar-value">
+                                        {% now "h:i:s A" %}
+                                    </span>
+                                </div>
                             </div>
+
                         </div>
+
+
+                        <!-- RIGHT SIDE -->
+                        <div class="topbar-right">
+
+                            <!-- Weather -->
+                            <div class="weather-box">
+
+                                <div class="weather-icon">
+                                    <i class="fas fa-cloud-sun"></i>
+                                </div>
+
+                                <div class="weather-content">
+                                    <span class="topbar-label">WEATHER</span>
+
+                                    <span class="weather-value">
+                                        <span id="weather-temp">--°C</span>
+                                        <small id="weather-location">
+                                            Loading...
+                                        </small>
+                                    </span>
+                                </div>
+
+                            </div>
+
+                            <!-- Divider -->
+                            <span class="topbar-divider"></span>
+
+                            <!-- Social -->
+                            <div class="social-links">
+
+                                <a href="#" aria-label="Twitter">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+
+                                <a href="#" aria-label="Instagram">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+
+                                <a href="#" aria-label="Pinterest">
+                                    <i class="fab fa-pinterest-p"></i>
+                                </a>
+
+                            </div>
+
+                            <!-- Admin -->
+                            {% if user.is_authenticated and user.is_staff %}
+
+                            <a href="{% url 'news-admin:post_list' %}" class="admin-button">
+                                <i class="fas fa-user-shield"></i>
+                                <span>Admin</span>
+                            </a>
+
+                            {% endif %}
+
+                        </div>
+
                     </div>
+
                 </div>
             </div>
+
             <div class="header-mid d-none d-md-block">
                 <div class="container">
                     <div class="row d-flex align-items-center">

@@ -6,7 +6,7 @@ from django.utils import timezone
 from datetime import timedelta
 from news_app.forms import ContactForm, CommentForm, NewsletterForm
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Q, Count, Sum
 from django.core.paginator import Paginator, PageNotAnInteger    
 
 class HomeView(ListView):
@@ -23,11 +23,31 @@ class HomeView(ListView):
         context = super().get_context_data(**kwargs)
         posts = self.get_queryset()
 
-        context["categories"] = Category.objects.order_by()[:4]
-        context["whatnews_top_6"] = posts.order_by("-published_at")[:6]
+        # Categories
+        categories = (
+            Category.objects
+            .annotate(
+                total_views=Sum("posts__view_count")
+            )
+            .order_by("-total_views")[:4]
+        )
+
+        for category in categories:
+            category.home_posts = posts.filter(
+                category=category
+            ).order_by("-view_count", "-published_at")[:6]
+
+        context["categories"] = categories
+
+        # What's New - All
+        context["whatnews_top_6"] = (
+            posts
+            .select_related("category")
+            .order_by("-published_at")[:6]
+        )
         context["trending_top"] = posts.order_by("-view_count")[:1]
         context["trending_bottom"] = posts.order_by("-view_count")[1:4]
-        context["recent_posts"] = posts.order_by("-published_at")[:3]
+        context["recent_posts"] = posts.order_by("-published_at")[:5]
 
         one_week_ago = timezone.now() - timedelta(days=7)
         context["weekly_posts"] = posts.filter(
@@ -63,7 +83,7 @@ class PostListView(ListView):
     template_name = "lists/list.html"
     context_object_name = "posts"
 
-    paginate_by = 3
+    paginate_by = 4
 
     queryset = Post.objects.filter(
         published_at__isnull = False,
@@ -78,6 +98,7 @@ class PostDetailView(DetailView):
     template_name = "details/detail.html"
     context_object_name = "post"
     pk_url_kwarg = "id"
+    paginate_by = 5
 
     def get_queryset(self):
         query = super().get_queryset()
@@ -102,7 +123,7 @@ class PostByCategory(ListView):
     model = Post
     template_name = "lists/list.html"
     context_object_name = "posts"
-    paginate_by = 1
+    paginate_by = 5
 
     def get_queryset(self):
         query = super().get_queryset()
@@ -120,7 +141,7 @@ class PostByTag(ListView):
     model = Post
     template_name = "lists/list.html"
     context_object_name = "posts"
-    paginate_by = 1
+    paginate_by = 4
 
     def get_queryset(self):
         return Post.objects.filter(
@@ -192,7 +213,7 @@ class PostSearchView(View):
             published_at__isnull=False,
         ).order_by("-published_at")
         page = request.GET.get("page", 1)
-        paginate_by = 1
+        paginate_by = 4
         paginator = Paginator(post_list, paginate_by)
         try:
             posts = paginator.page(page)

@@ -1,4 +1,4 @@
-{% for post in posts %}
+{% for post in posts|slice:3 %}
 <article class="blog_item">
     <div class="blog_item_img">
         <img class="card-img rounded-0" src="{{ post.image.url }}" alt="{{ post.title }}">

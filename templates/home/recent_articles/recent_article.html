@@ -14,7 +14,7 @@
             </div>
 
             <div class="row">
-                {% for recent_post in recent_posts %}
+                {% for recent_post in recent_posts|slice:":3" %}
                 <div class="col-lg-4 col-md-6">
                     <div class="single-recent mb-30">
 

@@ -7,11 +7,14 @@ from api.serializers import (
     CategorySerializer,
     PostSerializer,
     PostPublishSerializer,
+    CommentSerializer,
+    ContactSerializer,
+    NewsLetterSerializer
 )
-from news_app.models import Tag, Category, Post
+from news_app.models import Tag, Category, Post, Contact, Comment, Newsletter
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, exceptions
 from django.utils import timezone
 from rest_framework.generics import ListAPIView
 from django.shortcuts import get_object_or_404
@@ -108,3 +111,88 @@ class PostViewSet(viewsets.ModelViewSet):
         return super().get_permissions()
 
 
+class DraftListViewSet(ListAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset= queryset.filter(published_at__isnull = True)
+
+        return queryset
+
+
+class PostListByCategoryViewSet(ListAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Post.objects.filter(
+            published_at__isnull=False,
+            status="active",
+            category_id=self.kwargs["category_id"]
+        )
+
+
+class PostListByTagViewSet(ListAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Post.objects.filter(
+            published_at__isnull=False,
+            status="active",
+            tags__id=self.kwargs["tag_id"]
+        ).distinct()
+
+
+
+
+class ContactViewSet(viewsets.ModelViewSet):
+
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action in ["create"]:
+            return [permissions.AllowAny()]
+        return super().get_permissions()
+    
+    def update(self, request, *args, **kwargs):
+        raise exceptions.MethodNotAllowed(request.method)
+
+class NewsLetterViewSet(viewsets.ModelViewSet):
+    queryset = Newsletter.objects.all()
+    serializer_class = NewsLetterSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action in ["create"]:
+            return [permissions.AllowAny()]
+        return super().get_permissions()
+
+    def partial_update(self, request, *args, **kwargs):
+        return super().partial_update(request, *args, **kwargs)
+
+
+
+
+class CommentViewSet(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, post_id, *args, **kwargs):
+        comment = Comment.objects.filter(post=post_id).order_by("-created_at")
+        serializer_data = ContactSerializer(comment, many=True).data
+        return Response(serializer_data, status=status.HTTP_200_OK)
+
+    def post(self, request, post_id, *args, **kwargs):
+        request.data.update({"post": post_id})
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
