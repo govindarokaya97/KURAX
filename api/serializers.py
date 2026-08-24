@@ -76,10 +76,23 @@ class ContactSerializer(serializers.HyperlinkedModelSerializer):
     
     
 
-class CommentSerializer(serializers.HyperlinkedModelSerializer):
+class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ["id", "created_at", "updated_at","name", "email", "subject", "message"]
+        fields = [
+            "id",
+            "post",
+            "name",
+            "email",
+            "comment",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = [
+            "id",
+            "created_at",
+            "updated_at",
+        ]
 
 class NewsLetterSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

@@ -187,7 +187,9 @@ class CommentViewSet(APIView):
 
     def get(self, request, post_id, *args, **kwargs):
         comment = Comment.objects.filter(post=post_id).order_by("-created_at")
-        serializer_data = ContactSerializer(comment, many=True).data
+        if not comment.exists():
+            return Response({"message": "Comment is zero"}, status=status.HTTP_200_OK)
+        serializer_data = CommentSerializer(comment, many=True).data
         return Response(serializer_data, status=status.HTTP_200_OK)
 
     def post(self, request, post_id, *args, **kwargs):
@@ -196,3 +198,35 @@ class CommentViewSet(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, comment_id):
+        try:
+            comment = Comment.objects.get(id=comment_id)
+        except:
+            return Response(
+                {"error": "Comment Not Found"}, status=status.HTTP_404_NOT_FOUND
+            )
+        serializer = CommentSerializer(
+            comment,
+            data=request.data,
+            partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, comment_id):
+        try:
+            comment = Comment.objects.get(id=comment_id)
+        except:
+            return Response(
+                {"error": "Comment Not Found"}, status=status.HTTP_404_NOT_FOUND
+            )
+        comment.delete()
+        return Response(
+            {"message": "Comment deleted successfully"},
+            status=status.HTTP_204_NO_CONTENT,
+        )
+    permission_classes = [permissions.AllowAny]
